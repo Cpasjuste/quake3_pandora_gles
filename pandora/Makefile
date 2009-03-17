@@ -4,6 +4,11 @@
 # March 2009 by David Carre <cpasjuste@gmail.com>
 #
 
+# Pandora specific define
+X11 = 1
+GLES2 = 0
+PANDORA_TEST = 0
+
 # Where we are building from (where the source code should be!)
 MOUNT_DIR=../code
 
@@ -71,6 +76,19 @@ LDFLAGS=-L$(PNDSDK)/usr/lib -ldl -lm -lX11 -lXau -lXdmcp -lXxf86vm -lXext
 GL_CFAGS = -I$(PNDSDK)/usr/X11R6/include 
 
 GLLDFLAGS=-L$(PNDSDK)/usr/X11R6/lib -lGLES_CM -lIMGegl -lsrv_um
+
+ifeq ($(GLES2), 1)
+GLLDFLAGS += -lGLESv2 
+BASE_CFLAGS += -DGLES2
+endif
+
+ifeq ($(PANDORA_TEST), 1)
+BASE_CFLAGS += -DPANDORA_TEST
+endif
+
+ifeq ($(X11), 1)
+BASE_CFLAGS += -DX11
+endif
 DEBUG_CFLAGS = $(BASE_CFLAGS) -g  -Wall 
 DEBUG_CFLAGS += -DNO_MOUSEGRAB
 DEBUG_CFLAGS += -O
@@ -86,9 +104,9 @@ SHLIBLDFLAGS=-shared $(LDFLAGS)
 
 TARGETS=\
 	$(B)/$(PLATFORM)quake3 \
-	$(B)/baseq3/cgame$(ARCH).$(SHLIBEXT) \
-	$(B)/baseq3/qagame$(ARCH).$(SHLIBEXT) \
-	$(B)/baseq3/ui$(ARCH).$(SHLIBEXT)    
+	$(B)/baseq3/cgame.$(SHLIBEXT) \
+	$(B)/baseq3/qagame.$(SHLIBEXT) \
+	$(B)/baseq3/ui.$(SHLIBEXT)    
 
 #	$(B)/missionpack/cgame$(ARCH).$(SHLIBEXT) \
 #	$(B)/missionpack/qagame$(ARCH).$(SHLIBEXT) \
@@ -676,7 +694,7 @@ Q3CGOBJ = \
 	$(B)/baseq3/cgame/q_math.o \
 	$(B)/baseq3/cgame/q_shared.o
 
-$(B)/baseq3/cgame$(ARCH).$(SHLIBEXT) : $(Q3CGOBJ)
+$(B)/baseq3/cgame.$(SHLIBEXT) : $(Q3CGOBJ)
 	$(CC)  $(SHLIBLDFLAGS) -o $@ $(Q3CGOBJ)
 
 $(B)/baseq3/cgame/bg_misc.o : $(GDIR)/bg_misc.c; $(DO_SHLIB_CC)         
@@ -736,7 +754,7 @@ MPCGOBJ = \
 	$(B)/missionpack/cgame/q_shared.o \
 	$(B)/missionpack/cgame/ui_shared.o
 
-$(B)/missionpack/cgame$(ARCH).$(SHLIBEXT) : $(MPCGOBJ)
+$(B)/missionpack/cgame.$(SHLIBEXT) : $(MPCGOBJ)
 	$(CC) $(SHLIBLDFLAGS) -o $@ $(MPCGOBJ)
 
 $(B)/missionpack/cgame/bg_misc.o : $(GDIR)/bg_misc.c; $(DO_SHLIB_CC)     -DMISSIONPACK 
@@ -808,7 +826,7 @@ Q3GOBJ = \
 	$(B)/baseq3/game/q_math.o \
 	$(B)/baseq3/game/q_shared.o
 
-$(B)/baseq3/qagame$(ARCH).$(SHLIBEXT) : $(Q3GOBJ)
+$(B)/baseq3/qagame.$(SHLIBEXT) : $(Q3GOBJ)
 	$(CC)  $(SHLIBLDFLAGS) -o $@ $(Q3GOBJ)
 
 $(B)/baseq3/game/ai_chat.o : $(GDIR)/ai_chat.c; $(DO_SHLIB_CC)     
@@ -886,7 +904,7 @@ MPGOBJ = \
 	$(B)/missionpack/game/q_math.o \
 	$(B)/missionpack/game/q_shared.o
 
-$(B)/missionpack/qagame$(ARCH).$(SHLIBEXT) : $(MPGOBJ)
+$(B)/missionpack/qagame.$(SHLIBEXT) : $(MPGOBJ)
 	$(CC) $(SHLIBLDFLAGS) -o $@ $(MPGOBJ)
 
 $(B)/missionpack/game/ai_chat.o : $(GDIR)/ai_chat.c; $(DO_SHLIB_CC)    -DMISSIONPACK 
@@ -975,7 +993,7 @@ Q3UIOBJ = \
         $(B)/baseq3/ui/q_math.o \
         $(B)/baseq3/ui/q_shared.o
 
-$(B)/baseq3/ui$(ARCH).$(SHLIBEXT) : $(Q3UIOBJ)
+$(B)/baseq3/ui.$(SHLIBEXT) : $(Q3UIOBJ)
 	$(CC) $(CFLAGS) $(SHLIBLDFLAGS) -o $@ $(Q3UIOBJ)
 
 $(B)/baseq3/ui/bg_misc.o : $(GDIR)/bg_misc.c; $(DO_SHLIB_CC) 
@@ -1045,7 +1063,7 @@ MPUIOBJ = \
 	$(B)/missionpack/ui/q_math.o \
 	$(B)/missionpack/ui/q_shared.o
 
-$(B)/missionpack/ui$(ARCH).$(SHLIBEXT) : $(MPUIOBJ)
+$(B)/missionpack/ui.$(SHLIBEXT) : $(MPUIOBJ)
 	$(CC) $(CFLAGS) $(SHLIBLDFLAGS) -o $@ $(MPUIOBJ)
 
 $(B)/missionpack/ui/ui_atoms.o : $(UIDIR)/ui_atoms.c; $(DO_SHLIB_CC)  -DMISSIONPACK  

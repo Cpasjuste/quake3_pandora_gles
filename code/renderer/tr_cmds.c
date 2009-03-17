@@ -313,10 +313,6 @@ void RE_BeginFrame( stereoFrame_t stereoFrame ) {
 	tr.frameCount++;
 	tr.frameSceneNum = 0;
 
-#ifdef IPHONE
-//	GLimp_AcquireGL();
-#endif // IPHONE
-
 	//
 	// do overdraw measurement
 	//
@@ -393,7 +389,7 @@ void RE_BeginFrame( stereoFrame_t stereoFrame ) {
 	}
 	cmd->commandId = RC_DRAW_BUFFER;
 
-#ifndef IPHONE
+#ifndef _PANDORA_
 	if ( glConfig.stereoEnabled ) {
 		if ( stereoFrame == STEREO_LEFT ) {
 			cmd->buffer = (int)GL_BACK_LEFT;
@@ -404,7 +400,7 @@ void RE_BeginFrame( stereoFrame_t stereoFrame ) {
 		}
 	}
 	else
-#endif // !IPHONE
+#endif // !_PANDORA_
 	{
 		if ( stereoFrame != STEREO_CENTER ) {
 			ri.Error( ERR_FATAL, "RE_BeginFrame: Stereo is disabled, but stereoFrame was %i", stereoFrame );

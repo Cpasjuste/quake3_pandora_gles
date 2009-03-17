@@ -1344,6 +1344,14 @@ static void RoQShutdown( void ) {
 	}
 	cinTable[currentHandle].fileName[0] = 0;
 	currentHandle = -1;
+
+#ifdef _PANDORA_
+#ifdef PANDORA_TEST
+	GLimp_SetMode(800, 480);
+	cls.glconfig = glConfig;
+	VM_Call(uivm, UI_UPDATE_GLCONFIG);
+#endif 
+#endif
 }
 
 /*
@@ -1352,7 +1360,7 @@ SCR_StopCinematic
 ==================
 */
 e_status CIN_StopCinematic(int handle) {
-	
+
 	if (handle < 0 || handle>= MAX_VIDEO_HANDLES || cinTable[handle].status == FMV_EOF) return FMV_EOF;
 	currentHandle = handle;
 
@@ -1583,7 +1591,7 @@ void CIN_DrawCinematic (int handle) {
 	buf = cinTable[handle].buf;
 	SCR_AdjustFrom640( &x, &y, &w, &h );
 
-#ifdef IPHONE
+#ifdef _PANDORA_
 	re.DrawStretchRaw( x, y, w, h, cinTable[handle].CIN_WIDTH, cinTable[handle].CIN_HEIGHT, buf, handle, cinTable[handle].dirty);
 #else
 	if (cinTable[handle].dirty && (cinTable[handle].CIN_WIDTH != cinTable[handle].drawX || cinTable[handle].CIN_HEIGHT != cinTable[handle].drawY)) {
@@ -1642,7 +1650,7 @@ void CIN_DrawCinematic (int handle) {
 	}
 
 	re.DrawStretchRaw( x, y, w, h, cinTable[handle].drawX, cinTable[handle].drawY, buf, handle, cinTable[handle].dirty);
-#endif // IPHONE
+#endif // _PANDORA_
 	cinTable[handle].dirty = qfalse;
 }
 
@@ -1668,6 +1676,14 @@ void CL_PlayCinematic_f(void) {
 	}
 
 	S_StopAllSounds ();
+
+#ifdef _PANDORA_
+#ifdef PANDORA_TEST
+	GLimp_SetMode(640, 480);
+	cls.glconfig = glConfig;
+	VM_Call(uivm, UI_UPDATE_GLCONFIG);
+#endif
+#endif
 
 	CL_handle = CIN_PlayCinematic( arg, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, bits );
 	if (CL_handle >= 0) {

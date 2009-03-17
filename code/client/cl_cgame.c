@@ -540,31 +540,31 @@ int CL_CgameSystemCalls( int *args ) {
 		re.LoadWorld( VMA(1) );
 		return 0; 
 	case CG_R_REGISTERMODEL:
-#ifdef IPHONE
+#ifdef _PANDORA_
 		GLimp_AcquireGL();
 		return re.RegisterModel( VMA(1) );
 		GLimp_ReleaseGL();
 #else
 		return re.RegisterModel( VMA(1) );
-#endif // IPHONE
+#endif // _PANDORA_
 	case CG_R_REGISTERSKIN:
 		return re.RegisterSkin( VMA(1) );
 	case CG_R_REGISTERSHADER:
-#ifdef IPHONE_NOTYET
+#ifdef _PANDORA__NOTYET
 		GLimp_AcquireGL();
 		return re.RegisterShader( VMA(1) );
 		GLimp_ReleaseGL();
 #else
 		return re.RegisterShader( VMA(1) );
-#endif // IPHONE
+#endif // _PANDORA_
 	case CG_R_REGISTERSHADERNOMIP:
-#ifdef IPHONE_NOTYET
+#ifdef _PANDORA__NOTYET
 		GLimp_AcquireGL();
 		return re.RegisterShaderNoMip( VMA(1) );
 		GLimp_ReleaseGL();
 #else
 		return re.RegisterShaderNoMip( VMA(1) );
-#endif // IPHONE
+#endif // _PANDORA_
 	case CG_R_REGISTERFONT:
 		re.RegisterFont( VMA(1), args[2], VMA(3));
 	case CG_R_CLEARSCENE:
@@ -907,11 +907,6 @@ void CL_FirstSnapshot( void ) {
 		return;
 	}
 	cls.state = CA_ACTIVE;
-
-#ifdef IPHONE
-	// Force the device into right landscape mode:
-	GLimp_SetMode(90);
-#endif // IPHONE
 
 	// set the timedelta so we are exactly on this first frame
 	cl.serverTimeDelta = cl.snap.serverTime - cls.realtime;

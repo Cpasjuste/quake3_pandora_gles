@@ -381,35 +381,12 @@ void RE_RenderScene( const refdef_t *fd ) {
 	// convert to GL's 0-at-the-bottom space
 	//
 	Com_Memset( &parms, 0, sizeof( parms ) );
-#ifdef IPHONE
-	if ( glConfig.vidRotation == 90 || glConfig.vidRotation == 270 ) {
-		parms.viewportX = tr.refdef.y;
-		if ( glConfig.vidRotation == 270 ) {
-			parms.viewportX = glConfig.vidHeight - ( tr.refdef.y + tr.refdef.height );
-			parms.viewportY = glConfig.vidWidth - ( tr.refdef.x + tr.refdef.width );
-		} else {
-			parms.viewportX = tr.refdef.y;
-			parms.viewportY = tr.refdef.x;
-		}
-		parms.viewportWidth = tr.refdef.height;
-		parms.viewportHeight = tr.refdef.width;
-	}
-	else
-#endif // IPHONE
-	{
-#ifdef IPHONE
-		if ( glConfig.vidRotation == 180 ) {
-			parms.viewportX = glConfig.vidWidth - ( tr.refdef.x + tr.refdef.width );
-			parms.viewportY = tr.refdef.y;
-		} else
-#endif // IPHONE
-		{
-			parms.viewportX = tr.refdef.x;
-			parms.viewportY = glConfig.vidHeight - ( tr.refdef.y + tr.refdef.height );
-		}
-		parms.viewportWidth = tr.refdef.width;
-		parms.viewportHeight = tr.refdef.height;
-	}
+
+	parms.viewportX = tr.refdef.x;
+	parms.viewportY = glConfig.vidHeight - ( tr.refdef.y + tr.refdef.height );
+	parms.viewportWidth = tr.refdef.width;
+	parms.viewportHeight = tr.refdef.height;
+
 	parms.isPortal = qfalse;
 
 	parms.fovX = tr.refdef.fov_x;

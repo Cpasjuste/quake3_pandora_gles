@@ -100,7 +100,7 @@ static int hist_current = -1, hist_count = 0;
 // bk001207 
 #define MEM_THRESHOLD 96*1024*1024
 
-#ifndef IPHONE
+#ifndef _PANDORA_
 /*
 ==================
 Sys_LowPhysicalMemory()
@@ -1114,7 +1114,11 @@ sysEvent_t Sys_GetEvent( void ) {
   // in vga this calls KBD_Update, under X, it calls GetEvent
 #ifdef _PANDORA_
 #ifndef DEDICATED
+#ifndef X11
 	PND_SendKeys(); 
+#else
+	Sys_SendKeyEvents();
+#endif
 #endif
 #endif
 
@@ -1298,7 +1302,9 @@ int main ( int argc, char* argv[] )
 
 #ifdef _PANDORA_
 #ifndef DEDICATED
+#ifndef X11
 	PND_Setup_Controls();
+#endif
 #endif
 #endif
 
@@ -1312,7 +1318,9 @@ int main ( int argc, char* argv[] )
 
 #ifdef _PANDORA_
 #ifndef DEDICATED
+#ifndef X11
 	PND_Close_Controls();
+#endif
 #endif
 #endif
 }

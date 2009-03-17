@@ -193,25 +193,25 @@ void R_ImageList_f( void ) {
 		case 4:
 			ri.Printf( PRINT_ALL, "RGBA " );
 			break;
-#ifndef IPHONE
+#ifndef _PANDORA_
 		case GL_RGBA8:
 			ri.Printf( PRINT_ALL, "RGBA8" );
 			break;
 		case GL_RGB8:
 			ri.Printf( PRINT_ALL, "RGB8" );
 			break;
-#endif // !IPHONE
+#endif // !_PANDORA_
 		case GL_RGB4_S3TC:
 			ri.Printf( PRINT_ALL, "S3TC " );
 			break;
-#ifndef IPHONE
+#ifndef _PANDORA_
 		case GL_RGBA4:
 			ri.Printf( PRINT_ALL, "RGBA4" );
 			break;
 		case GL_RGB5:
 			ri.Printf( PRINT_ALL, "RGB5 " );
 			break;
-#endif // !IPHONE
+#endif // !_PANDORA_
 		default:
 			ri.Printf( PRINT_ALL, "???? " );
 		}
@@ -604,7 +604,7 @@ static void Upload32( unsigned *data,
 		// select proper internal format
 		if ( samples == 3 )
 		{
-#ifdef IPHONE
+#ifdef _PANDORA_
 			internalFormat = GL_RGBA;
 #else
 			if ( glConfig.textureCompression == TC_S3TC )
@@ -623,11 +623,11 @@ static void Upload32( unsigned *data,
 			{
 				internalFormat = 3;
 			}
-#endif // IPHONE
+#endif // _PANDORA_
 		}
 		else if ( samples == 4 )
 		{
-#ifdef IPHONE
+#ifdef _PANDORA_
 			internalFormat = GL_RGBA;
 #else
 			if ( r_texturebits->integer == 16 )
@@ -642,14 +642,14 @@ static void Upload32( unsigned *data,
 			{
 				internalFormat = 4;
 			}
-#endif // IPHONE
+#endif // _PANDORA_
 		}
 	} else {
-#ifdef IPHONE
+#ifdef _PANDORA_
 		internalFormat = GL_RGBA;
 #else
 		internalFormat = 3;
-#endif // IPHONE
+#endif // _PANDORA_
 	}
 	// copy or resample data as appropriate for first MIP level
 	if ( ( scaled_width == width ) && 
@@ -2052,14 +2052,14 @@ static void R_CreateFogImage( void ) {
 	tr.fogImage = R_CreateImage("*fog", (qbyte *)data, FOG_S, FOG_T, qfalse, qfalse, GL_CLAMP );
 	ri.Hunk_FreeTempMemory( data );
 
-#ifndef IPHONE
+#ifndef _PANDORA_
 	borderColor[0] = 1.0;
 	borderColor[1] = 1.0;
 	borderColor[2] = 1.0;
 	borderColor[3] = 1;
 
 	qglTexParameterfv( GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor );
-#endif // !IPHONE
+#endif // !_PANDORA_
 }
 
 /*

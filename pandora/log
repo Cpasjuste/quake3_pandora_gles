@@ -1,0 +1,33 @@
+../code/unix/unix_main.c:#ifndef IPHONE
+../code/unix/unix_net.c:#ifndef IPHONE
+../code/unix/unix_net.c:#endif // !IPHONE
+../code/unix/unix_net.c:#ifndef IPHONE
+../code/unix/unix_net.c:#endif // !IPHONE
+../code/unix/unix_net.c:#ifndef IPHONE
+../code/unix/unix_net.c:#endif // !IPHONE
+../code/unix/unix_shared.c:#ifdef IPHONE
+../code/unix/unix_shared.c:#endif // IPHONE
+../code/pandora/pandora_glimp.h:	IPHONE_QUADS = 0x10000,
+../code/pandora/pandora_glimp.h:	IPHONE_POLYGON
+../code/pandora/pandora_glimp.h:#define GL_QUADS				IPHONE_QUADS
+../code/pandora/pandora_glimp.h:#define GL_POLYGON				IPHONE_POLYGON
+../code/pandora/pandora_glimp.h:#endif // IPHONE_GLIMP_H
+../code/pandora/pandora_glimp.c:	if (_GLimp_beginmode == IPHONE_QUADS)
+../code/pandora/pandora_glimp.c:	else if (_GLimp_beginmode == IPHONE_POLYGON)
+../code/pandora/pandora_glimp.c:	if (_GLimp_beginmode == IPHONE_QUADS && _GLimp_numInputVerts % 4 == 0)
+../code/pandora/pandora_glimp.c:	else if (_GLimp_beginmode == IPHONE_POLYGON)
+../code/qcommon/common.c:#if defined(IPHONE)
+../code/qcommon/vm.c:#if ((defined __linux__) && (defined __powerpc__)) || defined(IPHONE)
+../code/qcommon/qcommon.h:#if IPHONE
+../code/qcommon/qcommon.h:#endif // IPHONE
+../code/renderer/tr_local.h:#ifdef IPHONE
+../code/renderer/tr_local.h:#endif // IPHONE
+../code/renderer/tr_local.h:#ifdef IPHONE
+../code/renderer/tr_local.h:#endif // IPHONE
+../code/renderer/tr_local.h:#ifdef IPHONE
+../code/renderer/tr_local.h:#endif // IPHONE
+../code/renderer/tr_local.h:#ifndef IPHONE
+../code/renderer/tr_local.h:#endif // !IPHONE
+../code/renderer/qgl.h:#elif defined(IPHONE)
+../code/renderer/qgl.h:#if defined(MACOS_X) && !defined(IPHONE)
+../code/renderer/qgl.h:#elif defined(IPHONE)

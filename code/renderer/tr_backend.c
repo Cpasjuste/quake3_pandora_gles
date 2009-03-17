@@ -662,10 +662,10 @@ void RB_RenderDrawSurfList( drawSurf_t *drawSurfs, int numDrawSurfs ) {
 	// darken down any stencil shadows
 	RB_ShadowFinish();		
 
-#ifndef IPHONE
+//#ifndef _PANDORA_
 	// add light flares on lights that aren't obscured
 	RB_RenderFlares();
-#endif // !IPHONE
+//#endif // !_PANDORA_
 
 #ifdef __MACOS__
 	Sys_PumpEvents();		// crutch up the mac's limited buffer queue size
@@ -691,27 +691,16 @@ void	RB_SetGL2D (void) {
 	backEnd.projection2D = qtrue;
 
 	// set 2D virtual screen size
-#ifdef IPHONE
-	if ( glConfig.vidRotation == 90.0 || glConfig.vidRotation == 270.0 )
-	{
-		qglViewport ( 0, 0, glConfig.vidHeight, glConfig.vidWidth );
-		qglScissor( 0, 0, glConfig.vidHeight, glConfig.vidWidth );
-	}
-	else
-#endif // IPHONE
-	{
-		qglViewport ( 0, 0, glConfig.vidWidth, glConfig.vidHeight );
-		qglScissor( 0, 0, glConfig.vidWidth, glConfig.vidHeight );
-	}
+	qglViewport ( 0, 0, glConfig.vidWidth, glConfig.vidHeight );
+	qglScissor( 0, 0, glConfig.vidWidth, glConfig.vidHeight );
+
+
 	qglMatrixMode(GL_PROJECTION);
-    qglLoadIdentity ();
-#ifdef IPHONE
-	qglRotatef (glConfig.vidRotation, 0, 0, 1);
-	qglTranslatef (0, 0, 0);
-#endif // IPHONE
+	qglLoadIdentity ();
+
 	qglOrtho (0, glConfig.vidWidth, glConfig.vidHeight, 0, 0, 1);
 	qglMatrixMode(GL_MODELVIEW);
-    qglLoadIdentity ();
+ 	qglLoadIdentity ();
 	
 	GL_State( GLS_DEPTHTEST_DISABLE |
 			  GLS_SRCBLEND_SRC_ALPHA |
@@ -767,11 +756,11 @@ void RE_StretchRaw (int x, int y, int w, int h, int cols, int rows, const qbyte 
 	if ( cols != tr.scratchImage[client]->width || rows != tr.scratchImage[client]->height ) {
 		tr.scratchImage[client]->width = tr.scratchImage[client]->uploadWidth = cols;
 		tr.scratchImage[client]->height = tr.scratchImage[client]->uploadHeight = rows;
-#ifdef IPHONE
+#ifdef _PANDORA_
 		qglTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, cols, rows, 0, GL_RGBA, GL_UNSIGNED_BYTE, data );
 #else
 		qglTexImage2D( GL_TEXTURE_2D, 0, GL_RGB8, cols, rows, 0, GL_RGBA, GL_UNSIGNED_BYTE, data );
-#endif // IPHONE
+#endif // _PANDORA_
 		qglTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
 		qglTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
 		qglTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP );
@@ -814,11 +803,11 @@ void RE_UploadCinematic (int w, int h, int cols, int rows, const qbyte *data, in
 	if ( cols != tr.scratchImage[client]->width || rows != tr.scratchImage[client]->height ) {
 		tr.scratchImage[client]->width = tr.scratchImage[client]->uploadWidth = cols;
 		tr.scratchImage[client]->height = tr.scratchImage[client]->uploadHeight = rows;
-#ifdef IPHONE
+#ifdef _PANDORA_
 		qglTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, cols, rows, 0, GL_RGBA, GL_UNSIGNED_BYTE, data );
 #else
 		qglTexImage2D( GL_TEXTURE_2D, 0, GL_RGB8, cols, rows, 0, GL_RGBA, GL_UNSIGNED_BYTE, data );
-#endif // IPHONE
+#endif // _PANDORA_
 		qglTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
 		qglTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
 		qglTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP );
@@ -1057,7 +1046,7 @@ const void	*RB_SwapBuffers( const void *data ) {
 
 	cmd = (const swapBuffersCommand_t *)data;
 
-#ifndef IPHONE
+//#ifndef _PANDORA_
 	// we measure overdraw by reading back the stencil buffer and
 	// counting up the number of increments that have happened
 	if ( r_measureOverdraw->integer ) {
@@ -1075,7 +1064,7 @@ const void	*RB_SwapBuffers( const void *data ) {
 		backEnd.pc.c_overDraw += sum;
 		ri.Hunk_FreeTempMemory( stencilReadback );
 	}
-#endif // !IPHONE
+//#endif // !_PANDORA_
 
 
 	if ( !glState.finishCalled ) {
