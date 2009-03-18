@@ -57,6 +57,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #ifdef _PANDORA_
 #include "../pandora/pandora_event.h"
+extern int x11;
 #endif
 
 unsigned  sys_frame_time;
@@ -1114,11 +1115,14 @@ sysEvent_t Sys_GetEvent( void ) {
   // in vga this calls KBD_Update, under X, it calls GetEvent
 #ifdef _PANDORA_
 #ifndef DEDICATED
-#ifndef X11
-	PND_SendKeys(); 
-#else
-	Sys_SendKeyEvents();
-#endif
+	if(!x11)
+	{
+		PND_SendKeys();
+	}
+	else
+	{
+		Sys_SendKeyEvents();
+	}
 #endif
 #endif
 
@@ -1291,6 +1295,7 @@ int main ( int argc, char* argv[] )
   memset( &sys_packetReceived[0], 0, MAX_MSGLEN*sizeof(qbyte) );
 
   Com_Init(cmdline);
+
   NET_Init();
 
   fcntl(0, F_SETFL, fcntl (0, F_GETFL, 0) | FNDELAY);
@@ -1302,9 +1307,9 @@ int main ( int argc, char* argv[] )
 
 #ifdef _PANDORA_
 #ifndef DEDICATED
-#ifndef X11
-	PND_Setup_Controls();
-#endif
+
+	if(!x11)
+		PND_Setup_Controls();
 #endif
 #endif
 
@@ -1318,9 +1323,8 @@ int main ( int argc, char* argv[] )
 
 #ifdef _PANDORA_
 #ifndef DEDICATED
-#ifndef X11
-	PND_Close_Controls();
-#endif
+	if(!x11)
+		PND_Close_Controls();
 #endif
 #endif
 }

@@ -308,7 +308,8 @@ Q3POBJ=\
 	$(B)/client/linux_snd.o \
 	$(B)/client/snd_mixa.o \
 	$(B)/client/pandora_glimp.o \
-	$(B)/client/pandora_event.o 
+	$(B)/client/pandora_event.o \
+	$(B)/client/pandora_x11event.o 
 
 
 $(B)/$(PLATFORM)quake3 : $(Q3OBJ) $(Q3POBJ)
@@ -462,6 +463,7 @@ $(B)/client/snd_mixa.o : $(UDIR)/snd_mixa.s; $(DO_AS)
 $(B)/client/matha.o : $(UDIR)/matha.s; $(DO_AS) 
 $(B)/client/pandora_glimp.o : $(PNDDIR)/pandora_glimp.c; $(DO_CC)  $(GL_CFLAGS) 
 $(B)/client/pandora_event.o : $(PNDDIR)/pandora_event.c; $(DO_CC)  $(GL_CFLAGS) 
+$(B)/client/pandora_x11event.o : $(PNDDIR)/pandora_x11event.c; $(DO_CC)  $(GL_CFLAGS)
 
 $(B)/client/unzip.o : $(CMDIR)/unzip.c; $(DO_CC) 
 $(B)/client/vm.o : $(CMDIR)/vm.c; $(DO_CC) 
