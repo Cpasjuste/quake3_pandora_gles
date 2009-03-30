@@ -7,7 +7,7 @@
 # Pandora specific define
 X11 = 1
 GLES2 = 0
-PANDORA_TEST = 0
+PANDORA_TEST = 1
 
 # Where we are building from (where the source code should be!)
 MOUNT_DIR=../code

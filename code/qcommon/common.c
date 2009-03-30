@@ -2114,7 +2114,9 @@ int Com_EventLoop( void ) {
 			CL_JoystickEvent( ev.evValue, ev.evValue2, ev.evTime );
 			break;
 		case SE_ACCEL:
+#ifndef _PANDORA_
 			CL_AccelEvent( ev.evValue, ev.evValue2, ev.evValue3 );
+#endif
 			break;
 		case SE_CONSOLE:
 			Cbuf_AddText( (char *)ev.evPtr );

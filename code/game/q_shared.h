@@ -341,6 +341,20 @@ static float LittleFloat (const float *l) { return FloatSwap(l); }
 
 typedef unsigned char 		qbyte;
 
+#define byte qbyte
+
+#ifdef __cplusplus
+#define EXTERN extern "C"
+#else
+#define EXTERN extern
+#endif
+
+#ifdef __cplusplus
+#define EXTERN_C extern "C"
+#else
+#define EXTERN_C
+#endif
+
 typedef enum {qfalse, qtrue}	qboolean;
 
 typedef int		qhandle_t;

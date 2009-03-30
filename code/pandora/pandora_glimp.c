@@ -277,120 +277,9 @@ void InitGLExtensions( void )
 
 }
 
-
-EGLint attrib_list_fsaa[] =
-{
-	EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
-        EGL_BUFFER_SIZE,  0,
-        EGL_DEPTH_SIZE,   16,
-	EGL_SAMPLE_BUFFERS, 1,
-    	EGL_SAMPLES,        4,
-        EGL_NONE
-};
-
-
-EGLint attrib_list_pbuff[] =
-{
-	EGL_WIDTH, 800,
-	EGL_HEIGHT, 480,
-	EGL_TEXTURE_FORMAT, EGL_TEXTURE_RGB,
-	EGL_NONE
-};
-
-#ifdef GLES2
-
-GLuint _frameBuffer;
-GLuint _renderBuffer;
-GLuint _depthBuffer;
-
-#define GL_RGB565                         0x8D62
-#define GL_DEPTH_COMPONENT16              0x81A5
-#define GL_RENDERBUFFER_BINDING           0x8CA7
-#define GL_RENDERBUFFER                   0x8D41
-#define GL_DEPTH_ATTACHMENT               0x8D00
-#define GL_COLOR_ATTACHMENT0              0x8CE0
-#define GL_FRAMEBUFFER_BINDING            0x8CA6
-#define GL_FRAMEBUFFER                    0x8D40
-
-
-#define kColorFormat  GL_RGB565
-#define kNumColorBits 16
-#define kDepthFormat  GL_DEPTH_COMPONENT16
-#define kNumDepthBits 16
-
-void createSurface()
-{
-	pglContext = eglCreateContext(sglDisplay, sglConfig, NULL, NULL);
-	if( pglContext==0 )
-	{
-		ri.Printf( PRINT_ALL, "Error: GL Context\n" );
-	}
-
-	EGLint attribs[64];
-	int i = 0;
-	attribs[i++] = EGL_WIDTH;
-	attribs[i++] = glConfig.vidWidth;
-	attribs[i++] = EGL_HEIGHT;
-	attribs[i++] = glConfig.vidHeight;
-	attribs[i++] = EGL_TEXTURE_FORMAT;
-	attribs[i++] = EGL_TEXTURE_RGB;
-	attribs[i++] = EGL_NONE;
-
-	pglSurface = eglCreatePbufferSurface(sglDisplay, sglConfig, attribs);
-
-	GLint oldFrameBuffer, oldRenderBuffer;
-
-	qglGetIntegerv(GL_RENDERBUFFER_BINDING, &oldRenderBuffer);
-	qglGetIntegerv(GL_FRAMEBUFFER_BINDING, &oldFrameBuffer);
-
-	glGenRenderbuffers(1, &_renderBuffer);
-	glBindRenderbuffer(GL_RENDERBUFFER, _renderBuffer);
-
- 	if( !glRenderbufferStorage ( GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, glConfig.vidWidth, glConfig.vidHeight) )
-	{
-		glDeleteRenderbuffers(1, &_renderBuffer);
-		glBindRenderbuffer(GL_RENDERBUFFER_BINDING, oldRenderBuffer);
-		ri.Printf( PRINT_ALL, "glRenderbufferStorage failed\n");
-	}
-
-
-	glGenFramebuffers(1, &_frameBuffer);
-	glBindFramebuffer(GL_FRAMEBUFFER, _frameBuffer);
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, _renderBuffer);
-	glGenRenderbuffers(1, &_depthBuffer);
-	glBindRenderbuffer(GL_RENDERBUFFER, _depthBuffer);
-	glRenderbufferStorage(GL_RENDERBUFFER, kDepthFormat, glConfig.vidWidth, glConfig.vidHeight);
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, _depthBuffer);
-
-	glBindRenderbuffer(GL_FRAMEBUFFER, oldFrameBuffer);
-	glBindRenderbuffer(GL_RENDERBUFFER, oldRenderBuffer);
-
-}
-#endif
-
 void GLimp_EndFrame( void ) 
 {
-#ifdef GLES2
-	EGLContext oldContext = eglGetCurrentContext() ;
-	GLuint oldRenderBuffer;
-
-	if (oldContext != pglContext)
-		eglMakeCurrent(sglDisplay, pglSurface, pglSurface, pglContext);
-
-
-	qglGetIntegerv(GL_RENDERBUFFER_BINDING, (GLint *)&oldRenderBuffer);
-	glBindRenderbuffer(GL_RENDERBUFFER, _renderBuffer);
-
-	if ( !glIsRenderbuffer( GL_RENDERBUFFER ) )
-	{
-		ri.Printf( PRINT_ALL, "Failed to swap buffer\n");$
-	}
-
-	if (oldContext != sglContext)
-		eglMakeCurrent(sglDisplay, sglSurface, sglSurface, sglContext);
-#else
 	eglSwapBuffers( sglDisplay, sglSurface );
-#endif
 }
 
 void
@@ -443,8 +332,17 @@ EGLint attrib_list[] =
 	EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
 	EGL_BUFFER_SIZE, 0,
 	EGL_DEPTH_SIZE, 16,
-//	EGL_STENCIL_SIZE, 8,
 	EGL_NONE
+};
+
+EGLint attrib_list_fsaa[] =
+{
+	EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
+        EGL_BUFFER_SIZE,  0,
+        EGL_DEPTH_SIZE,   16,
+	EGL_SAMPLE_BUFFERS, 1,
+    	EGL_SAMPLES,        4,
+        EGL_NONE
 };
 
 void GLimp_InitGLESx11()
@@ -580,12 +478,8 @@ void GLimp_InitGLESx11()
 		ri.Printf( PRINT_ALL, "Error: eglInitialize() failed.\n");
 	}
 
-
-	EGLint *attribList = NULL;
-	attribList = attrib_list;
-
 	int iConfigs;
-	if (!eglChooseConfig(sglDisplay, attribList, &sglConfig, 1, &iConfigs) || (iConfigs != 1))
+	if (!eglChooseConfig(sglDisplay, attrib_list, &sglConfig, 1, &iConfigs) || (iConfigs != 1))
 	{
 		ri.Printf( PRINT_ALL, "Error: eglChooseConfig() failed.\n");
 	}
@@ -607,9 +501,6 @@ void GLimp_InitGLESx11()
 
 void GLimp_InitGLESraw()
 {
-	EGLint *attribList = NULL;
-	attribList = attrib_list;
-
 	EGLint numConfigs;
 	EGLint majorVersion;
 	EGLint minorVersion;
@@ -625,7 +516,7 @@ void GLimp_InitGLESraw()
 		ri.Printf( PRINT_ALL, "GL Init\n" );
 	}
 
-	if( !eglChooseConfig( sglDisplay, attribList, &sglConfig, 1, &numConfigs ) )
+	if( !eglChooseConfig( sglDisplay, attrib_list, &sglConfig, 1, &numConfigs ) )
 	{
 		ri.Printf( PRINT_ALL, "GL Config\n" );
 	}
@@ -644,9 +535,6 @@ void GLimp_InitGLESraw()
 	
 	eglMakeCurrent( sglDisplay, sglSurface, sglSurface, sglContext );    
 
-#ifdef GLES2
-	createSurface();
-#endif
 	qglHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
 	qglHint(GL_FOG_HINT, GL_FASTEST);
 	qglHint(GL_LINE_SMOOTH_HINT, GL_FASTEST);
